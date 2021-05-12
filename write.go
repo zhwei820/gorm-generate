@@ -104,6 +104,7 @@ func writeDaoFile(mp *modelParse) error {
 		modelAbsPath := mp.modelDirectoryAbsPath()
 		if len(modelAbsPath) > 0 || modelAbsPath != mp.daoDirectoryAbsPath() {
 			bf.WriteString("import (\n")
+			bf.WriteString("	\"errors\"\n")
 			bf.WriteString("	\"gorm.io/gorm\"\n")
 			bf.WriteString(fmt.Sprintf("	models \"%s\"\n", modelAbsPath))
 			bf.WriteString(fmt.Sprintf("	\"%s\"\n", mp.mysqlDirectoryAbsPath()))
@@ -119,7 +120,7 @@ func writeDaoFile(mp *modelParse) error {
 				"	var m models.%s\n"+
 				"	err := mysql.DefaultConnection().Where(\"%s = ?\", id).First(&m).Error\n"+
 				"	if err != nil {\n"+
-				"		if gorm.IsRecordNotFoundError(err) {\n"+
+				"		if errors.Is(err, gorm.ErrRecordNotFound) {\n"+
 				"			return nil, nil\n"+
 				"		}\n"+
 				"		return nil, err \n"+
