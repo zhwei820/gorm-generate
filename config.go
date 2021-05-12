@@ -84,7 +84,7 @@ func (c config) GetModelName() string {
 	return strings.Replace(mn, " ", "", -1)
 }
 
-func (c config) GetDNS() string {
+func (c config) Getdsn() string {
 	if len(c.DB) > 0 {
 		return c.DB
 	}
@@ -92,7 +92,7 @@ func (c config) GetDNS() string {
 }
 
 func (c config) Validate() error {
-	if len(c.GetDNS()) == 0 {
+	if len(c.Getdsn()) == 0 {
 		return errors.New("db connect name must not be blank")
 	}
 	if len(cf.GetTableName()) == 0 {

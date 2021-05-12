@@ -15,22 +15,22 @@ import (
 	"errors"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/gorm"
+	_ "gorm.io/gorm/dialects/mysql"
 )
 
 var con *gorm.DB
 
 func DefaultConnection() *gorm.DB {
 	if con == nil {
-		con = connect("{{ dns }}")
+		con = connect("{{ dsn }}")
 	}
 	return con
 }
 
-func connect(dns string) *gorm.DB {
+func connect(dsn string) *gorm.DB {
 	var err error
-	connection, err := gorm.Open("mysql", dns)
+	connection, err := gorm.Open("mysql", dsn)
 	if err != nil {
 		panic(errors.New("db connection error"))
 	}
@@ -81,11 +81,11 @@ func writeDaoFile(mp *modelParse) error {
 		daoPath := strings.TrimRight(mp.DaoDirectory, "/")
 		createDirectoryIfNotExist(daoPath)
 		bf := new(bytes.Buffer)
-		bf.WriteString("package "+ mp.DaoPackageName +"\n\n")
+		bf.WriteString("package " + mp.DaoPackageName + "\n\n")
 		modelAbsPath := mp.modelDirectoryAbsPath()
 		if len(modelAbsPath) > 0 || modelAbsPath != mp.daoDirectoryAbsPath() {
 			bf.WriteString("import (\n")
-			bf.WriteString("	\"github.com/jinzhu/gorm\"\n")
+			bf.WriteString("	\"gorm.io/gorm\"\n")
 			bf.WriteString(fmt.Sprintf("	models \"%s\"\n", modelAbsPath))
 			bf.WriteString(fmt.Sprintf("	\"%s\"\n", mp.mysqlDirectoryAbsPath()))
 			bf.WriteString(")\n\n")
@@ -144,7 +144,7 @@ func writeRepoFile(mp *modelParse) error {
 		repoPath := strings.TrimRight(mp.RepositoryDirectory, "/")
 		createDirectoryIfNotExist(repoPath)
 		bf := new(bytes.Buffer)
-		bf.WriteString("package "+ mp.RepoPackageName +"\n\n")
+		bf.WriteString("package " + mp.RepoPackageName + "\n\n")
 		daoAbsPath := mp.daoDirectoryAbsPath()
 		modelAbsPath := mp.modelDirectoryAbsPath()
 		bf.WriteString("import (\n")

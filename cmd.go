@@ -4,11 +4,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/jinzhu/gorm"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"gopkg.in/yaml.v2"
+	"gorm.io/gorm"
 )
 
 var cf config
@@ -18,7 +19,7 @@ func init() {
 	flag.StringVar(&cf.FileName, "model-file", "", "Generate model file name")
 	flag.StringVar(&cf.Directory, "model-directory", "", "Generated model directory")
 	flag.StringVar(&cf.ModelName, "model-name", "", "Generate model struct name")
-	flag.StringVar(&cf.DB, "connection", "", "DB connect dns")
+	flag.StringVar(&cf.DB, "connection", "", "DB connect dsn")
 	flag.StringVar(&cf.TableName, "table", "", "Table name of generated model")
 	flag.StringVar(&cf.DaoDirectory, "dao", "", "The directory of dao generate.")
 	flag.StringVar(&cf.RepDirectory, "repo", "", "The directory of repository generate.")
@@ -36,7 +37,7 @@ func main() {
 		fmt.Println(e.Error())
 		return
 	}
-	c, e := connect(cf.GetDNS())
+	c, e := connect(cf.Getdsn())
 	if e != nil {
 		fmt.Println(e.Error())
 		return
@@ -69,7 +70,7 @@ func getTableDescription() (*modelParse, error) {
 		}
 	}()
 	tableName := cf.GetTableName()
-	if con.HasTable(tableName) == false {
+	if con.Table(tableName).Statement.Table == "" {
 		return nil, errors.New("table \"" + tableName + "\" not exist")
 	}
 	var result tableDcs

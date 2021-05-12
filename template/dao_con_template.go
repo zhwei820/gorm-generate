@@ -1,30 +1,49 @@
 package mysql
 
 import (
-	"errors"
+	"log"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
 var con *gorm.DB
 
 func DefaultConnection() *gorm.DB {
 	if con == nil {
-		con = connect("{{ dns }}")
+		con = connect("{{ dsn }}")
 	}
 	return con
 }
 
-func connect(dns string) *gorm.DB {
+func connect(dsn string) *gorm.DB {
 	var err error
-	connection, err := gorm.Open("mysql", dns)
+	connection, err := gorm.Open(mysql.New(mysql.Config{
+		DSN: dsn,
+	}), &gorm.Config{
+		Logger:                                   logger.Default.LogMode(logger.Info),
+		DisableForeignKeyConstraintWhenMigrating: true,
+		NamingStrategy:                           schema.NamingStrategy{SingularTable: true},
+	})
+
 	if err != nil {
-		panic(errors.New("db connection error"))
+		log.Println(dsn)
+		log.Println(err)
+		log.Fatal("database configuration load error.")
 	}
-	connection.DB().SetConnMaxLifetime(time.Duration(300) * time.Second)
-	connection.DB().SetMaxOpenConns(200)
-	connection.DB().SetMaxIdleConns(50)
+
+	if err != nil {
+		return nil
+	}
+	//connection.LogMode(true)
+	sqldb, _ := connection.DB()
+
+	sqldb.SetConnMaxLifetime(time.Duration(300) * time.Second)
+	sqldb.SetMaxOpenConns(200)
+	sqldb.SetMaxIdleConns(50)
 	return connection.Unscoped()
 }

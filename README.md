@@ -7,7 +7,7 @@ Helpers:
     -config string
           Special config file, format: .yml
     -connection string
-          DB connect dns
+          DB connect dsn
     -dao string
           The directory of dao generate.
     -model-directory string
@@ -57,7 +57,7 @@ popular_anchor_dao.go
 package dao
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	models "gorm_generate/models"
 	"gorm_generate/mysql"
 )
