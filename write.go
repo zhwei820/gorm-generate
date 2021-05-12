@@ -12,11 +12,13 @@ var conTemplate = `
 package mysql
 
 import (
-	"errors"
+	"log"
 	"time"
 
-	"gorm.io/gorm"
 	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 
 )
 
@@ -115,19 +117,19 @@ func writeDaoFile(mp *modelParse) error {
 				"}\n\n", mp.DaoStructName(), mp.ModelName, mp.primaryKey()),
 			fmt.Sprintf("func(%s) GetById(id %s) (*models.%s, error) {\n"+
 				"	var m models.%s\n"+
-				"	e := mysql.DefaultConnection().Where(\"%s = ?\", id).First(&m).Error\n"+
-				"	if e != nil {\n"+
-				"		if gorm.IsRecordNotFoundError(e) {\n"+
+				"	err := mysql.DefaultConnection().Where(\"%s = ?\", id).First(&m).Error\n"+
+				"	if err != nil {\n"+
+				"		if gorm.IsRecordNotFoundError(err) {\n"+
 				"			return nil, nil\n"+
 				"		}\n"+
-				"		return nil, e \n"+
+				"		return nil, err \n"+
 				"	}\n"+
 				"	return &m, nil\n"+
 				"}\n\n", mp.DaoStructName(), mp.primaryKeyType(), mp.ModelName, mp.ModelName, mp.primaryKey()),
 			fmt.Sprintf("func (%s) Create(m models.%s) (*models.%s, error)  {\n"+
-				"	e := mysql.DefaultConnection().Create(&m).Error\n"+
-				"	if e != nil {\n"+
-				"		return nil, e\n"+
+				"	err := mysql.DefaultConnection().Create(&m).Error\n"+
+				"	if err != nil {\n"+
+				"		return nil, err\n"+
 				"	}\n"+
 				"	return &m, nil\n"+
 				"}\n\n", mp.DaoStructName(), mp.ModelName, mp.ModelName),
@@ -135,9 +137,9 @@ func writeDaoFile(mp *modelParse) error {
 				"	if len(updates) == 0 {\n"+
 				"		return &m, nil\n"+
 				"	}\n"+
-				"	e := mysql.DefaultConnection().Model(&m).UpdateColumns(updates).Error\n"+
-				"	if e != nil {\n"+
-				"		return nil, e\n"+
+				"	err := mysql.DefaultConnection().Model(&m).UpdateColumns(updates).Error\n"+
+				"	if err != nil {\n"+
+				"		return nil, err\n"+
 				"	}\n"+
 				"	return &m, nil\n"+
 				"}\n\n", mp.DaoStructName(), mp.ModelName, mp.ModelName),
