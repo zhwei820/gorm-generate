@@ -62,7 +62,7 @@ func connect(dsn string) *gorm.DB {
 
 func writeConnectionUtilTool(mp *modelParse) error {
 	if len(mp.DaoDirectory) > 0 {
-		path := mysqlDirectory
+		path := mp.ConnDirectory
 		createDirectoryIfNotExist(path)
 		conPath := path + "/con.go"
 		_, e := os.Stat(conPath)
