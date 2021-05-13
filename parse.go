@@ -25,6 +25,7 @@ type modelParse struct {
 	ModelDirectory      string
 	RepositoryDirectory string
 	DaoDirectory        string
+	Force               bool
 }
 
 func (m modelParse) mysqlDirectoryAbsPath() string {

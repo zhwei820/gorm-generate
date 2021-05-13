@@ -23,6 +23,7 @@ type config struct {
 	DaoDirectory   string
 	ConnDirectory  string
 	RepDirectory   string
+	Force          bool
 }
 
 func (c config) ToString() string {

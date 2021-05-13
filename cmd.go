@@ -25,6 +25,7 @@ func init() {
 	flag.StringVar(&cf.RepDirectory, "repo", "", "The directory of repository generate.")
 	flag.StringVar(&cf.ConnDirectory, "conn", "", "The directory of conn generate.")
 	flag.StringVar(&cf.ConfigFilePath, "config", "", "Special config file, format: .yml")
+	flag.BoolVar(&cf.Force, "f", false, "force write")
 }
 
 func main() {
@@ -97,7 +98,9 @@ func getTableDescription() (*modelParse, error) {
 		sps := strings.Split(cf.RepDirectory, "/")
 		repoPackageName = sps[len(sps)-1]
 	}
+
 	parse := modelParse{
+		Force:               cf.Force,
 		ModelPackageName:    modelPackageName,
 		ModelDirectory:      modelDirectory,
 		ConnDirectory:       ConnDirectory,
@@ -129,6 +132,7 @@ func readConfigFromFile(cfg *config) error {
 			return errors.New("config file open error:" + e.Error())
 		}
 		e = yaml.Unmarshal(bts, &cfg.fileConfig)
+		// fmt.Println("fileConfig", g.Export(cfg.fileConfig))
 		if e != nil {
 			return errors.New("config file format error:" + e.Error())
 		}

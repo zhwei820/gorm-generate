@@ -69,13 +69,13 @@ func (t tableDesc) fieldType() fieldType {
 		}
 		return TypeInt8
 	}
-	if strings.HasPrefix(t.Type, "varchar") || strings.HasPrefix(t.Type, "text") {
+	if strings.HasPrefix(t.Type, "varchar") || strings.Contains(t.Type, "text") {
 		return TypeString
 	}
 	if strings.HasPrefix(t.Type, "float") || strings.HasPrefix(t.Type, "double") || strings.HasPrefix(t.Type, "decimal") {
 		return TypeFloat
 	}
-	if strings.HasPrefix(t.Type, "date") || strings.HasPrefix(t.Type, "time") {
+	if strings.Contains(t.Type, "date") || strings.Contains(t.Type, "time") {
 		return TypeFloat
 	}
 	return TypeUnknown
