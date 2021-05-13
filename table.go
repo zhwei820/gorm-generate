@@ -75,5 +75,8 @@ func (t tableDesc) fieldType() fieldType {
 	if strings.HasPrefix(t.Type, "float") || strings.HasPrefix(t.Type, "double") || strings.HasPrefix(t.Type, "decimal") {
 		return TypeFloat
 	}
+	if strings.HasPrefix(t.Type, "date") || strings.HasPrefix(t.Type, "time") {
+		return TypeFloat
+	}
 	return TypeUnknown
 }
