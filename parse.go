@@ -21,12 +21,11 @@ type modelParse struct {
 	ModelName           string
 	Fields              []parseField
 	TableName           string
+	ConnDirectory       string
 	ModelDirectory      string
 	RepositoryDirectory string
 	DaoDirectory        string
 }
-
-const mysqlDirectory = "mysql"
 
 func (m modelParse) mysqlDirectoryAbsPath() string {
 	dir, e := os.Getwd()
@@ -35,9 +34,9 @@ func (m modelParse) mysqlDirectoryAbsPath() string {
 		_, rootDirectory = path.Split(dir)
 	}
 	if len(rootDirectory) > 0 {
-		return rootDirectory + "/" + mysqlDirectory
+		return rootDirectory + "/" + m.ConnDirectory
 	}
-	return mysqlDirectory
+	return m.ConnDirectory
 }
 
 func (m modelParse) daoDirectoryAbsPath() string {

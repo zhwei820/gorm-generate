@@ -21,6 +21,7 @@ type config struct {
 	ModelName      string
 	Directory      string
 	DaoDirectory   string
+	ConnDirectory  string
 	RepDirectory   string
 }
 

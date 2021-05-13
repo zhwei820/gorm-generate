@@ -23,6 +23,7 @@ func init() {
 	flag.StringVar(&cf.TableName, "table", "", "Table name of generated model")
 	flag.StringVar(&cf.DaoDirectory, "dao", "", "The directory of dao generate.")
 	flag.StringVar(&cf.RepDirectory, "repo", "", "The directory of repository generate.")
+	flag.StringVar(&cf.ConnDirectory, "conn", "", "The directory of conn generate.")
 	flag.StringVar(&cf.ConfigFilePath, "config", "", "Special config file, format: .yml")
 }
 
@@ -87,6 +88,11 @@ func getTableDescription() (*modelParse, error) {
 		sps := strings.Split(cf.DaoDirectory, "/")
 		daoPackageName = sps[len(sps)-1]
 	}
+	ConnDirectory := "mysql"
+	if len(cf.DaoDirectory) > 0 {
+		sps := strings.Split(cf.ConnDirectory, "/")
+		ConnDirectory = sps[len(sps)-1]
+	}
 	if len(cf.RepDirectory) > 0 {
 		sps := strings.Split(cf.RepDirectory, "/")
 		repoPackageName = sps[len(sps)-1]
@@ -94,6 +100,7 @@ func getTableDescription() (*modelParse, error) {
 	parse := modelParse{
 		ModelPackageName:    modelPackageName,
 		ModelDirectory:      modelDirectory,
+		ConnDirectory:       ConnDirectory,
 		FileName:            cf.GetFileName(),
 		ModelName:           cf.GetModelName(),
 		Fields:              result.parseFields(),
