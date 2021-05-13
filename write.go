@@ -66,7 +66,7 @@ func writeConnectionUtilTool(mp *modelParse) error {
 		createDirectoryIfNotExist(path)
 		conPath := path + "/con.go"
 		_, e := os.Stat(conPath)
-		if e != nil && os.IsNotExist(e) {
+		if e != nil && (os.IsNotExist(e) || mp.Force) {
 			return ioutil.WriteFile(path+"/con.go", []byte(conTemplate), 0755)
 		}
 		return nil
