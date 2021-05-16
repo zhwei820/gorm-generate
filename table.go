@@ -5,14 +5,14 @@ import (
 	"strings"
 )
 
-type tableDcs []tableDesc
+type tableDcList []tableDesc
 
-func (c tableDcs) ToString() string {
+func (c tableDcList) ToString() string {
 	b, _ := json.MarshalIndent(c, "", "	")
 	return string(b)
 }
 
-func (c tableDcs) parseFields() (fields []parseField) {
+func (c tableDcList) parseFields() (fields []parseField, Time bool) {
 	for _, desc := range c {
 		fields = append(fields, parseField{
 			Attr:       desc.fieldAttrName(),
@@ -21,6 +21,9 @@ func (c tableDcs) parseFields() (fields []parseField) {
 			ColumnName: desc.Field,
 			IsPrimary:  desc.isPrimaryKey(),
 		})
+		if desc.Time {
+			Time = true
+		}
 	}
 	return
 }
@@ -32,31 +35,32 @@ type tableDesc struct {
 	Key     string `gorm:"column:Key"`
 	Default string `gorm:"column:Default"`
 	Extra   string `gorm:"column:Extra"`
+	Time    bool   ``
 }
 
-func (t tableDesc) fieldAttrName() string {
+func (t *tableDesc) fieldAttrName() string {
 	name := strings.Replace(t.Field, "_", " ", -1)
 	name = strings.Title(name)
 	return strings.Replace(name, " ", "", -1)
 }
 
-func (t tableDesc) columnTag() string {
+func (t *tableDesc) columnTag() string {
 	return "`json:\"" + t.Field + "\" gorm:\"column:" + t.Field + "\"`"
 }
 
-func (t tableDesc) defaultValue() string {
+func (t *tableDesc) defaultValue() string {
 	return t.Default
 }
 
-func (t tableDesc) nullable() bool {
+func (t *tableDesc) nullable() bool {
 	return t.Null == "YES"
 }
 
-func (t tableDesc) isPrimaryKey() bool {
+func (t *tableDesc) isPrimaryKey() bool {
 	return t.Key == "PRI"
 }
 
-func (t tableDesc) fieldType() fieldType {
+func (t *tableDesc) fieldType() fieldType {
 	if strings.HasPrefix(t.Type, "int") || strings.HasPrefix(t.Type, "bigint") {
 		if strings.HasSuffix(t.Type, "unsigned") {
 			return TypeUInt32
@@ -76,6 +80,7 @@ func (t tableDesc) fieldType() fieldType {
 		return TypeFloat
 	}
 	if strings.Contains(t.Type, "date") || strings.Contains(t.Type, "time") {
+		t.Time = true
 		return TypeDateTime
 	}
 	return TypeUnknown

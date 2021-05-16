@@ -4,7 +4,7 @@ type fieldType string
 
 const (
 	TypeUnknown  fieldType = "interface{}"
-	TypeDateTime fieldType = "time.Time"
+	TypeDateTime fieldType = "*gtime.Time"
 	TypeUInt     fieldType = "uint"
 	TypeInt      fieldType = "int"
 	TypeFloat    fieldType = "float64"

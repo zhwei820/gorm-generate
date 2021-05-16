@@ -75,7 +75,7 @@ func getTableDescription() (*modelParse, error) {
 	if con.Table(tableName).Statement.Table == "" {
 		return nil, errors.New("table \"" + tableName + "\" not exist")
 	}
-	var result tableDcs
+	var result tableDcList
 	con.Raw("DESCRIBE " + tableName).Scan(&result)
 	modelDirectory := cf.GetDirectory()
 	modelPackageName := "models"
@@ -89,29 +89,27 @@ func getTableDescription() (*modelParse, error) {
 		sps := strings.Split(cf.DaoDirectory, "/")
 		daoPackageName = sps[len(sps)-1]
 	}
-	ConnDirectory := "mysql"
-	if len(cf.DaoDirectory) > 0 {
-		sps := strings.Split(cf.ConnDirectory, "/")
-		ConnDirectory = sps[len(sps)-1]
-	}
+
+	fmt.Println("ConnDirectory", cf.ConnDirectory)
 	if len(cf.RepDirectory) > 0 {
 		sps := strings.Split(cf.RepDirectory, "/")
 		repoPackageName = sps[len(sps)-1]
 	}
-
+	Fields, Time := result.parseFields()
 	parse := modelParse{
 		Force:               cf.Force,
 		ModelPackageName:    modelPackageName,
 		ModelDirectory:      modelDirectory,
-		ConnDirectory:       ConnDirectory,
+		ConnDirectory:       cf.ConnDirectory,
 		FileName:            cf.GetFileName(),
 		ModelName:           cf.GetModelName(),
-		Fields:              result.parseFields(),
+		Fields:              Fields,
 		TableName:           cf.GetTableName(),
 		DaoDirectory:        cf.DaoDirectory,
 		DaoPackageName:      daoPackageName,
 		RepoPackageName:     repoPackageName,
 		RepositoryDirectory: cf.RepDirectory,
+		TimeImport:          Time,
 	}
 
 	return &parse, nil

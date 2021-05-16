@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path"
 )
@@ -19,6 +20,7 @@ type modelParse struct {
 	RepoPackageName     string
 	FileName            string
 	ModelName           string
+	TimeImport          bool
 	Fields              []parseField
 	TableName           string
 	ConnDirectory       string
@@ -34,6 +36,7 @@ func (m modelParse) mysqlDirectoryAbsPath() string {
 	if e == nil {
 		_, rootDirectory = path.Split(dir)
 	}
+	fmt.Println("m.ConnDirectory", m.ConnDirectory)
 	if len(rootDirectory) > 0 {
 		return rootDirectory + "/" + m.ConnDirectory
 	}

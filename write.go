@@ -76,7 +76,18 @@ func writeConnectionUtilTool(mp *modelParse) error {
 
 func writeModelFile(mp *modelParse) error {
 	bf := new(bytes.Buffer)
-	bf.WriteString("package " + mp.ModelPackageName + "\n\n")
+	bf.WriteString("package " + mp.ModelPackageName + "\n")
+
+	if mp.TimeImport {
+
+		bf.WriteString(`
+import (
+	"github.com/gogf/gf/os/gtime"
+)
+
+`)
+	}
+
 	bf.WriteString(fmt.Sprintf("type %s struct { \n", mp.ModelName))
 	for _, field := range mp.Fields {
 		bf.WriteString(fmt.Sprintf("	%s %s %s\n", field.Attr, field.Type, field.Tag))
@@ -166,6 +177,7 @@ func writeRepoFile(mp *modelParse) error {
 		bf := new(bytes.Buffer)
 		bf.WriteString("package " + mp.RepoPackageName + "\n\n")
 		daoAbsPath := mp.daoDirectoryAbsPath()
+		fmt.Println("daoAbsPath", daoAbsPath)
 		modelAbsPath := mp.modelDirectoryAbsPath()
 		bf.WriteString("import (\n")
 		bf.WriteString(fmt.Sprintf("	models \"%s\"\n", modelAbsPath))
