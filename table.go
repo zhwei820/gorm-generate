@@ -76,7 +76,7 @@ func (t tableDesc) fieldType() fieldType {
 		return TypeFloat
 	}
 	if strings.Contains(t.Type, "date") || strings.Contains(t.Type, "time") {
-		return TypeFloat
+		return TypeDateTime
 	}
 	return TypeUnknown
 }
