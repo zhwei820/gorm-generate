@@ -50,10 +50,10 @@ func main() {
 		fmt.Println(e.Error())
 		return
 	}
-	if e := writeModelFile(mp); e != nil {
-		fmt.Println(e.Error())
-		return
-	}
+	// if e := writeModelFile(mp); e != nil {
+	// 	fmt.Println(e.Error())
+	// 	return
+	// }
 	if e := writeDaoFile(mp); e != nil {
 		fmt.Println(e.Error())
 		return
